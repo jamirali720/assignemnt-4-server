@@ -1,6 +1,5 @@
 import { ErrorRequestHandler } from "express";
-import { ZodError } from "zod";
-import { handleZodErrors } from "./handleZodErrors";
+
 import handleMongooseErrors from "./handleMongoValidationError";
 import handleCastErrors from "./handleCastError";
 import handleDuplicateError from "./handleDuplicateError";
@@ -43,12 +42,7 @@ export const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
     },
   ];
 
-  if (err instanceof ZodError) {
-    const errors = handleZodErrors(err);
-    statusCode = errors.statusCode;
-    message = errors.message;
-    errorSource = errors.errorSource as TErrorSource;
-  } else if (err.name === "ValidationError") {
+ if (err.name === "ValidationError") {
     const errors = handleMongooseErrors(err);
     statusCode = errors.statusCode;
     message = errors.message;

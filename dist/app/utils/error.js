@@ -4,8 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleError = exports.ErrorHandler = void 0;
-const zod_1 = require("zod");
-const handleZodErrors_1 = require("./handleZodErrors");
 const handleMongoValidationError_1 = __importDefault(require("./handleMongoValidationError"));
 const handleCastError_1 = __importDefault(require("./handleCastError"));
 const handleDuplicateError_1 = __importDefault(require("./handleDuplicateError"));
@@ -34,13 +32,7 @@ const handleError = (err, _req, res, _next) => {
             message: "Something went wrong",
         },
     ];
-    if (err instanceof zod_1.ZodError) {
-        const errors = (0, handleZodErrors_1.handleZodErrors)(err);
-        statusCode = errors.statusCode;
-        message = errors.message;
-        errorSource = errors.errorSource;
-    }
-    else if (err.name === "ValidationError") {
+    if (err.name === "ValidationError") {
         const errors = (0, handleMongoValidationError_1.default)(err);
         statusCode = errors.statusCode;
         message = errors.message;

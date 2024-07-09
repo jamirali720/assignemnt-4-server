@@ -29,7 +29,7 @@ const sportsSchema = new mongoose_1.Schema({
         default: 0,
     },
     quantity: {
-        type: String,
+        type: Number,
         default: 0,
     },
     brand: {
@@ -37,7 +37,7 @@ const sportsSchema = new mongoose_1.Schema({
         required: [true, "Brand is required"],
     },
     rating: {
-        type: String,
+        type: Number,
         default: 0,
     },
     image: {

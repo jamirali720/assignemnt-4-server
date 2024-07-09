@@ -32,7 +32,7 @@ const sportsSchema = new Schema<ISports>(
       default: 0,
     },
     quantity: {
-      type: String,
+      type: Number,
       default: 0,
     },
     brand: {
@@ -40,7 +40,7 @@ const sportsSchema = new Schema<ISports>(
       required: [true, "Brand is required"],
     },
     rating: {
-      type: String,
+      type: Number,
       default: 0,
     },
     image: {
