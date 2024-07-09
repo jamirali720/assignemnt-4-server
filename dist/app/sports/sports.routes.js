@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const sports_controllers_1 = require("./sports.controllers");
+const sports_zod_validation_1 = require("./sports.zod.validation");
+const requestValidator_1 = require("../middleware/requestValidator");
+const upload_1 = require("../multer/upload");
+const sportsRouter = (0, express_1.Router)();
+sportsRouter.route("/create-sports").post(upload_1.upload.single('image'), (0, requestValidator_1.requestValidator)(sports_zod_validation_1.createSportsValidationSchema), sports_controllers_1.sportsController.handleCreateSports);
+sportsRouter.route("/sports").get(sports_controllers_1.sportsController.handleGetAllSports);
+sportsRouter.route("/single-sports/:id").get(sports_controllers_1.sportsController.handleGetSingleSport);
+sportsRouter.route("/update-sport/:id").put((0, requestValidator_1.requestValidator)(sports_zod_validation_1.UpdateSportsValidationSchema), sports_controllers_1.sportsController.handleUpdateSport);
+sportsRouter.route("/delete-sport/:id").delete(sports_controllers_1.sportsController.handleDeleteSport);
+sportsRouter.route("/contact").post(sports_controllers_1.sportsController.handleContactForm);
+exports.default = sportsRouter;
