@@ -14,7 +14,7 @@ const databaseConnection = async () => {
       console.log(`Assignment-4 server is running on port ${configs.port}`);
     });
   } catch (error) {
-    console.error("database connection failed");
+    console.error("database connection failed", error);
   }
 };
 databaseConnection();

@@ -25,7 +25,7 @@ const databaseConnection = () => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        console.error("database connection failed");
+        console.error("database connection failed", error);
     }
 });
 databaseConnection();
