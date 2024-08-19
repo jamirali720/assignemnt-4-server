@@ -4,6 +4,7 @@ import handleMongooseErrors from "./handleMongoValidationError";
 import handleCastErrors from "./handleCastError";
 import handleDuplicateError from "./handleDuplicateError";
 import configs from "../configs";
+import multer from "multer";
 
 export type TErrorSource = {
   path: string | number;
@@ -31,7 +32,7 @@ export class ErrorHandler extends Error {
 }
 
 // global error handler middleware
-export const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
+export const handleError: ErrorRequestHandler = (err, _req, res, _next) => {  
   let message: string = err.message || "Internal Server Error";
   let statusCode: number = err.statusCode || 500;
 
@@ -74,7 +75,16 @@ export const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
         message: err.message,
       },
     ];
+  } else if (err instanceof multer.MulterError) {   
+    message = err.message;
+    errorSource = [
+      {
+        path: "",
+        message: err.message,
+      },
+    ];
   }
+
 
   res.status(statusCode).json({
     success: false,

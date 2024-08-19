@@ -12,27 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendContactEmail = void 0;
-const nodemailer_1 = __importDefault(require("nodemailer"));
+exports.handleSendPublishableKey = exports.handlePaymentIntent = void 0;
+const higherOrderFunction_1 = __importDefault(require("../utils/higherOrderFunction"));
 const configs_1 = __importDefault(require("../configs"));
-const transporter = nodemailer_1.default.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: configs_1.default.NODE_ENV === "production", // Use `true` for port 465, `false` for all other ports
-    auth: {
-        user: configs_1.default.adminEmail,
-        pass: configs_1.default.smtpPasswordOne,
-    },
-});
-const sendContactEmail = (emailData) => __awaiter(void 0, void 0, void 0, function* () {
-    // send mail with defined transport object
-    const info = yield transporter.sendMail({
-        from: configs_1.default.adminEmail,
-        to: emailData.email, // list of receivers
-        subject: emailData.subject, // Subject line
-        text: emailData.message, // plain text body
+const stripe = require("stripe")(configs_1.default.stripeSecretKey);
+exports.handlePaymentIntent = (0, higherOrderFunction_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const paymentIntent = yield stripe.paymentIntents.create({
+        amount: req.body.amount,
+        currency: "usd",
+        payment_method_types: ["card"],
     });
-    console.log("Message sent: %s", info.messageId);
-    return info.response;
-});
-exports.sendContactEmail = sendContactEmail;
+    res.status(200).json({
+        clientSecret: paymentIntent.client_secret,
+    });
+}));
+exports.handleSendPublishableKey = (0, higherOrderFunction_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({
+        publishableKey: configs_1.default.stripePublishableKey,
+    });
+}));

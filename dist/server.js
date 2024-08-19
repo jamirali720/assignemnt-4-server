@@ -29,11 +29,13 @@ const databaseConnection = () => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 databaseConnection();
-process.on("uncaughtException", () => {
+process.on("uncaughtException", (error) => {
+    console.log(error);
     console.log("uncaughtException is detected. Server shutting down..");
     process.exit(1);
 });
-process.on("unhandledRejection", () => {
+process.on("unhandledRejection", (error) => {
+    console.log(error);
     console.log("unhandledRejection is detected. Server shutting down");
     if (server) {
         server.close(() => {

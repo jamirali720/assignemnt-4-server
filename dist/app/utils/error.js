@@ -8,6 +8,7 @@ const handleMongoValidationError_1 = __importDefault(require("./handleMongoValid
 const handleCastError_1 = __importDefault(require("./handleCastError"));
 const handleDuplicateError_1 = __importDefault(require("./handleDuplicateError"));
 const configs_1 = __importDefault(require("../configs"));
+const multer_1 = __importDefault(require("multer"));
 // error handler class
 class ErrorHandler extends Error {
     constructor(statusCode, message, stack = "") {
@@ -61,6 +62,15 @@ const handleError = (err, _req, res, _next) => {
         ];
     }
     else if (err instanceof Error) {
+        message = err.message;
+        errorSource = [
+            {
+                path: "",
+                message: err.message,
+            },
+        ];
+    }
+    else if (err instanceof multer_1.default.MulterError) {
         message = err.message;
         errorSource = [
             {

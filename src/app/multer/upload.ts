@@ -1,41 +1,76 @@
-import { v2 as cloudinary } from 'cloudinary';
-import multer, { Multer } from 'multer';
-import { deleteImagePath } from '../utils/deleteImagePath';
+import { v2 as cloudinary } from "cloudinary";
+
+import { deleteImagePath } from "../utils/deleteImagePath";
+import { Request } from "express";
+import multer, {Multer, FileFilterCallback } from "multer";
+
+const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"]
 
 
- // Configuration
- cloudinary.config({
+// Configuration
+cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET, // Click 'View Credentials' below to copy your API secret
+  api_secret: process.env.API_SECRET,
 });
 
-export const sendImageToCloudinary = (imageName: string, imagePath:string) => {
+export const sendImageToCloudinary = (imageName: string, imagePath: string) => {
   // Upload an image
   return new Promise((resolve, reject) => {
-    cloudinary.uploader
-    .upload(imagePath, {
-      public_id: imageName,
-    }, (err, result) => {
-      if(err) {
+    cloudinary.uploader.upload(
+      imagePath,
+      {
+        public_id: imageName,
+      },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+        deleteImagePath(imagePath);
+      }
+    );
+  });
+};
+
+export const deleteImageFromCloudinary = (imageId: string) => {
+  // delete an image from cloudinary
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(imageId, (err, result) => {
+      if (err) {
         reject(err);
       }
       resolve(result);
-      deleteImagePath(imagePath);
-    });    
+    });
   });
-
-
 };
+
+
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.cwd() + '/uploads/');
+    cb(null, process.cwd() + "/uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + file.originalname;
-    cb(null, file.fieldname + '-' + uniqueSuffix);
+    const uniqueSuffix = Date.now() + "-" + file.originalname;
+    cb(null, file.fieldname + "-" + uniqueSuffix);
   },
+ 
 });
 
-export const upload :Multer = multer({ storage: storage });
+const imageFilter = function (
+  req: Request,
+  file: Express.Multer.File,
+  cb: any
+) {
+  
+  if (!allowedFiles.includes(file.mimetype)) {
+    return cb(new Error("Only .jpg .jpeg .png and .gif images are allowed"), false);
+  }
+  
+  cb(null, true);
+};
+
+
+export const upload: Multer = multer({ storage: storage, fileFilter: imageFilter});
