@@ -32,6 +32,7 @@ const handleCreateSports = catchAsync(async (req, res) => {
 const handleGetAllSports = catchAsync(async (req, res) => {
   const query = req.query;  
   const result = await SportsService.getAllSportsService(query);
+  
   successResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

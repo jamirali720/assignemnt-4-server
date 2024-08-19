@@ -6,27 +6,28 @@ class QueryBuilder {
         this.queryStr = queryStr;
     }
     searchByName() {
-        const name = this.queryStr.name !== ""
-            ? { name: { $regex: this.queryStr.name, $options: "i" } }
+        const name = this.queryStr.name
+            ? { name: { $regex: `${this.queryStr.name}`, $options: "i" } }
             : {};
         this.query = this.query.find(Object.assign({}, name));
         return this;
     }
     searchByCategory() {
-        const category = this.queryStr.category !== "All"
-            ? { category: this.queryStr.category }
+        const category = this.queryStr.category === "All"
+            ? {} : this.queryStr.category ? { category: this.queryStr.category }
             : {};
         this.query = this.query.find(Object.assign({}, category));
         return this;
     }
     searchByBrand() {
-        const brand = this.queryStr.brand !== "All" ? { brand: this.queryStr.brand } : {};
+        const brand = this.queryStr.brand === "All" ? {} : this.queryStr.brand ? { brand: this.queryStr.brand } : {};
         this.query = this.query.find(Object.assign({}, brand));
         return this;
     }
     filter() {
         const queryCopy = Object.assign({}, this.queryStr);
         const removeFields = ["limit", "page", "name", "category", "brand", "sort"];
+        // remove some fields
         removeFields.forEach((field) => delete queryCopy[field]);
         let queryString = JSON.stringify(queryCopy);
         queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);

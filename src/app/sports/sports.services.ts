@@ -14,8 +14,8 @@ const createSportsService = async (payload: Partial<ISports>) => {
   return sports;
 };
 
-const getAllSportsService = async (query: TQuery) => { 
-  const features = new QueryBuilder(Sport.find(), query)
+const getAllSportsService = async (query: TQuery) => {  
+  const features = new QueryBuilder( Sport.find(), query)
     .searchByName()
     .searchByCategory()
     .searchByBrand()
@@ -24,8 +24,9 @@ const getAllSportsService = async (query: TQuery) => {
     .sorting();
 
   const sports = await features.query;  
+  console.log(sports)
 
-  if (!sports) {
+  if (sports.length === 0) {
     throw new ErrorHandler(httpStatus.NOT_FOUND, "No sports Data Found");
   }
   return sports;

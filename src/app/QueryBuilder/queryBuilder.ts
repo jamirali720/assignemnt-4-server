@@ -12,25 +12,25 @@ class QueryBuilder {
     this.queryStr = queryStr;
   }
 
-  searchByName() {
+  searchByName() {  
     const name =
-      this.queryStr.name !== ""
-        ? { name: { $regex: this.queryStr.name, $options: "i" } }
+      this.queryStr.name 
+        ? { name: { $regex: `${this.queryStr.name}`, $options: "i" } }
         : {};
-    this.query = this.query.find({ ...name });
+    this.query = this.query.find({ ...name });    
     return this;
   }
   searchByCategory() {
     const category =
-      this.queryStr.category !== "All"
-        ? { category: this.queryStr.category }
+      this.queryStr.category === "All" 
+        ? {} : this.queryStr.category ?  { category: this.queryStr.category } 
         : {};
     this.query = this.query.find({ ...category });
     return this;
   }
   searchByBrand() {
     const brand =
-      this.queryStr.brand !== "All" ? { brand: this.queryStr.brand } : {};   
+      this.queryStr.brand === "All" ? {} : this.queryStr.brand  ?  { brand: this.queryStr.brand } : {};   
     this.query = this.query.find({ ...brand });
     return this;
   }
@@ -38,7 +38,9 @@ class QueryBuilder {
   filter() {
     const queryCopy = { ...this.queryStr };   
     const removeFields = ["limit", "page", "name", "category", "brand", "sort"];
+    // remove some fields
     removeFields.forEach((field) => delete (queryCopy as QueryMap)[field]);
+
     let queryString = JSON.stringify(queryCopy);
     queryString = queryString.replace(
       /\b(gt|gte|lt|lte)\b/g,

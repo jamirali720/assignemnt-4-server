@@ -35,7 +35,8 @@ const getAllSportsService = (query) => __awaiter(void 0, void 0, void 0, functio
         .pagination()
         .sorting();
     const sports = yield features.query;
-    if (!sports) {
+    console.log(sports);
+    if (sports.length === 0) {
         throw new error_1.ErrorHandler(http_status_1.default.NOT_FOUND, "No sports Data Found");
     }
     return sports;
