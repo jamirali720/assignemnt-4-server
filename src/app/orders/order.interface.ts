@@ -1,14 +1,16 @@
 // name, category, stock quantity, brand, rating
 export interface IShipping {
+  name: string
   address: string;
   city: string;
   state: string;
   country?: number;
   phoneNo?: number;
   pinCode: string;
+  email: string;
 }
 export interface IOrderItems {
-  name: string;
+  productName: string;
   price: number;
   productId: string;
   image: string;
@@ -24,8 +26,7 @@ export interface IPayment {
 export interface IOrder {
   shippingInfo: IShipping;
   orderItems: IOrderItems[];
-  paymentInfo: IPayment;
-  email: string;
+  paymentInfo: IPayment; 
   orderDate?: Date;
   orderStatus: string;
   paidAt: Date;
@@ -38,5 +39,5 @@ export interface IOrder {
 }
 
 export interface IStatus {
-  status: "Delivered" | "shipped"
+  status: "Delivered" | "Shipped"
 }

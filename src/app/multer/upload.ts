@@ -7,13 +7,15 @@ import multer, {Multer, FileFilterCallback } from "multer";
 const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"]
 
 
-// Configuration
+// Configuration of cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
 
+
+// upload image to cloudinary
 export const sendImageToCloudinary = (imageName: string, imagePath: string) => {
   // Upload an image
   return new Promise((resolve, reject) => {
@@ -33,6 +35,7 @@ export const sendImageToCloudinary = (imageName: string, imagePath: string) => {
   });
 };
 
+// delete image from cloudinary
 export const deleteImageFromCloudinary = (imageId: string) => {
   // delete an image from cloudinary
   return new Promise((resolve, reject) => {
@@ -47,7 +50,7 @@ export const deleteImageFromCloudinary = (imageId: string) => {
 
 
 
-
+//multer function
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, process.cwd() + "/uploads/");
@@ -58,7 +61,7 @@ const storage = multer.diskStorage({
   },
  
 });
-
+// image filtering to specify image
 const imageFilter = function (
   req: Request,
   file: Express.Multer.File,

@@ -6,6 +6,7 @@ import { sendContactEmail } from "../utils/nodemailer";
 import QueryBuilder from "../QueryBuilder/queryBuilder";
 import { updateStock } from "../utils/updateProduct";
 
+// create a new sports service
 const createSportsService = async (payload: Partial<ISports>) => {
   const sports = await Sport.create(payload);
   if (!sports) {
@@ -14,23 +15,22 @@ const createSportsService = async (payload: Partial<ISports>) => {
   return sports;
 };
 
-const getAllSportsService = async (query: TQuery) => {  
-  const features = new QueryBuilder( Sport.find(), query)
+// get all sports services with the specified parameters
+const getAllSportsService = async (query: TQuery) => { 
+  const features = new QueryBuilder(Sport.find(), query)
     .searchByName()
+    .filter()
     .searchByCategory()
     .searchByBrand()
-    .filter()
     .pagination()
     .sorting();
 
-  const sports = await features.query;  
-  console.log(sports)
+  const sports = await features.query;
 
-  if (sports.length === 0) {
-    throw new ErrorHandler(httpStatus.NOT_FOUND, "No sports Data Found");
-  }
   return sports;
 };
+
+// get all sports without query parameters
 const getSportsService = async () => {
   const sports = await Sport.find();
   if (!sports) {
@@ -39,6 +39,16 @@ const getSportsService = async () => {
   return sports;
 };
 
+// get sports latest
+const getLatestSportsService = async () => {
+  const sports = await Sport.find().sort({ createdAt: -1 }).limit(8);
+  if (!sports) {
+    throw new ErrorHandler(httpStatus.NOT_FOUND, "No sports Data Found");
+  }
+  return sports;
+};
+
+// get single sport by id
 const getSingleSportService = async (id: string) => {
   const sports = await Sport.findById(id);
   if (!sports) {
@@ -47,11 +57,11 @@ const getSingleSportService = async (id: string) => {
   return sports;
 };
 
+// update sport by id
 const updateSportsService = async (
   id: string,
   payload: Record<string, string>
-) => {  
- 
+) => {
   const updates: Record<string, unknown> = {};
   const allowedUpdatesFields = [
     "name",
@@ -60,7 +70,7 @@ const updateSportsService = async (
     "description",
     "price",
     "stock",
-    "image"
+    "image",
   ];
 
   if (payload && typeof payload === "object") {
@@ -82,7 +92,7 @@ const updateSportsService = async (
   return result;
 };
 
-// update stock with cash on delivery 
+// update stock with cash on delivery
 const updateStockWithCashOnDelivery = async (
   payload: {
     id: string;
@@ -100,7 +110,7 @@ const updateStockWithCashOnDelivery = async (
   return result;
 };
 
-
+// delete sport by id
 const deleteSportsService = async (id: string) => {
   const result = await Sport.findByIdAndDelete(id);
   if (!result) {
@@ -110,13 +120,12 @@ const deleteSportsService = async (id: string) => {
   return result;
 };
 
-// contact information
+// contact information for contact section
 const contactFormSubmit = async (payload: {
   name: string;
   email: string;
   subject: string;
   message: string;
- 
 }) => {
   const result = await sendContactEmail(payload);
   if (!result) {
@@ -129,6 +138,7 @@ const contactFormSubmit = async (payload: {
   return result;
 };
 
+// create a new review to a sport
 const createReviewService = async (id: string, payload: TReview) => {
   const { name, email, comment, rating } = payload;
 
@@ -161,8 +171,8 @@ const createReviewService = async (id: string, payload: TReview) => {
   });
 
   sports.ratings = averageRating / sports.reviews?.length!;
-  await sports.save({validateBeforeSave:false});
-  
+  await sports.save({ validateBeforeSave: false });
+
   return sports;
 };
 
@@ -176,4 +186,5 @@ export const SportsService = {
   contactFormSubmit,
   getSportsService,
   createReviewService,
+  getLatestSportsService,
 };

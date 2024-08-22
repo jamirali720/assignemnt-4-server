@@ -20,6 +20,7 @@ const sports_services_1 = require("./sports.services");
 const upload_1 = require("../multer/upload");
 const sports_model_1 = require("./sports.model");
 const error_1 = require("../utils/error");
+// create a new sports handler
 const handleCreateSports = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const resp = (yield (0, upload_1.sendImageToCloudinary)(req.file.filename, req.file.path));
     const result = yield sports_services_1.SportsService.createSportsService(Object.assign(Object.assign({}, req.body), { image: { url: resp.secure_url, public_id: resp.public_id } }));
@@ -30,6 +31,7 @@ const handleCreateSports = (0, higherOrderFunction_1.default)((req, res) => __aw
         data: result,
     });
 }));
+// get all sports with query handler
 const handleGetAllSports = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query;
     const result = yield sports_services_1.SportsService.getAllSportsService(query);
@@ -40,6 +42,7 @@ const handleGetAllSports = (0, higherOrderFunction_1.default)((req, res) => __aw
         data: result,
     });
 }));
+// get all sports without query  handler 
 const handleGetSports = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield sports_services_1.SportsService.getSportsService();
     (0, success_1.successResponse)(res, {
@@ -49,6 +52,17 @@ const handleGetSports = (0, higherOrderFunction_1.default)((req, res) => __await
         data: result,
     });
 }));
+// get latest sports handler 
+const handleGetLatestSports = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield sports_services_1.SportsService.getLatestSportsService();
+    (0, success_1.successResponse)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Latest Sports retrieved successfully",
+        data: result,
+    });
+}));
+// get single sport handler
 const handleGetSingleSport = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield sports_services_1.SportsService.getSingleSportService(req.params.id);
     (0, success_1.successResponse)(res, {
@@ -58,6 +72,7 @@ const handleGetSingleSport = (0, higherOrderFunction_1.default)((req, res) => __
         data: result,
     });
 }));
+// update single sports by id
 const handleUpdateSport = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sports = yield sports_model_1.Sport.findById(req.body.id);
     if (!sports) {
@@ -74,8 +89,8 @@ const handleUpdateSport = (0, higherOrderFunction_1.default)((req, res) => __awa
         data: result,
     });
 }));
+// update stock on cash delivery
 const handleUpdateStockWithCashOn = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("check payload", req.body.orders);
     const result = yield sports_services_1.SportsService.updateStockWithCashOnDelivery(req.body.orders);
     (0, success_1.successResponse)(res, {
         success: true,
@@ -84,6 +99,7 @@ const handleUpdateStockWithCashOn = (0, higherOrderFunction_1.default)((req, res
         data: result,
     });
 }));
+// delete single sports by id
 const handleDeleteSport = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield sports_services_1.SportsService.deleteSportsService(req.params.id);
     (0, success_1.successResponse)(res, {
@@ -93,8 +109,8 @@ const handleDeleteSport = (0, higherOrderFunction_1.default)((req, res) => __awa
         data: result,
     });
 }));
+// contact form submit  handler
 const handleContactForm = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("contact info ", req.body);
     const result = yield sports_services_1.SportsService.contactFormSubmit(req.body);
     (0, success_1.successResponse)(res, {
         success: true,
@@ -103,6 +119,7 @@ const handleContactForm = (0, higherOrderFunction_1.default)((req, res) => __awa
         data: result,
     });
 }));
+// create review for sports by id  handler
 const handleCreateReview = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield sports_services_1.SportsService.createReviewService(req.params.id, req.body);
     (0, success_1.successResponse)(res, {
@@ -122,4 +139,5 @@ exports.sportsController = {
     handleContactForm,
     handleGetSports,
     handleCreateReview,
+    handleGetLatestSports,
 };

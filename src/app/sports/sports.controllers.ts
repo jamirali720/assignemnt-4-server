@@ -10,6 +10,9 @@ import { UploadApiResponse } from "cloudinary";
 import { Sport } from "./sports.model";
 import { ErrorHandler } from "../utils/error";
 
+
+
+// create a new sports handler
 const handleCreateSports = catchAsync(async (req, res) => {
   const resp = (await sendImageToCloudinary(
     req.file!.filename,
@@ -29,6 +32,7 @@ const handleCreateSports = catchAsync(async (req, res) => {
   });
 });
 
+// get all sports with query handler
 const handleGetAllSports = catchAsync(async (req, res) => {
   const query = req.query;  
   const result = await SportsService.getAllSportsService(query);
@@ -40,6 +44,8 @@ const handleGetAllSports = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// get all sports without query  handler 
 const handleGetSports = catchAsync(async (req, res) => {
   const result = await SportsService.getSportsService();
   successResponse(res, {
@@ -49,6 +55,20 @@ const handleGetSports = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// get latest sports handler 
+const handleGetLatestSports = catchAsync(async (req, res) => {
+  const result = await SportsService.getLatestSportsService();
+  successResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Latest Sports retrieved successfully",
+    data: result,
+  });
+});
+
+
+// get single sport handler
 const handleGetSingleSport = catchAsync(async (req, res) => {
   const result = await SportsService.getSingleSportService(req.params.id);
   successResponse(res, {
@@ -58,6 +78,8 @@ const handleGetSingleSport = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// update single sports by id
 const handleUpdateSport = catchAsync(async (req, res) => {
   const sports = await Sport.findById(req.body.id);
   if (!sports) {
@@ -86,8 +108,9 @@ const handleUpdateSport = catchAsync(async (req, res) => {
   });
 });
 
-const handleUpdateStockWithCashOn = catchAsync(async (req, res) => {
-  console.log("check payload", req.body.orders);
+
+// update stock on cash delivery
+const handleUpdateStockWithCashOn = catchAsync(async (req, res) => { 
   const result = await SportsService.updateStockWithCashOnDelivery(
     req.body.orders
   );
@@ -99,6 +122,8 @@ const handleUpdateStockWithCashOn = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// delete single sports by id
 const handleDeleteSport = catchAsync(async (req, res) => {
   const result = await SportsService.deleteSportsService(req.params.id);
   successResponse(res, {
@@ -108,8 +133,10 @@ const handleDeleteSport = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+
+// contact form submit  handler
 const handleContactForm = catchAsync(async (req, res) => {
-  console.log("contact info ", req.body);
   const result = await SportsService.contactFormSubmit(req.body);
   successResponse(res, {
     success: true,
@@ -118,6 +145,9 @@ const handleContactForm = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+
+// create review for sports by id  handler
 const handleCreateReview = catchAsync(async (req, res) => {
   const result = await SportsService.createReviewService(
     req.params.id,
@@ -142,4 +172,5 @@ export const sportsController = {
   handleContactForm,
   handleGetSports,
   handleCreateReview,
+  handleGetLatestSports,
 };

@@ -17,6 +17,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const error_1 = require("../utils/error");
 const order_model_1 = require("./order.model");
 const updateProduct_1 = require("../utils/updateProduct");
+// create order service
 const createOrderService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const order = yield order_model_1.Order.create(payload);
     if (!order) {
@@ -24,6 +25,7 @@ const createOrderService = (payload) => __awaiter(void 0, void 0, void 0, functi
     }
     return order;
 });
+// get all orders service
 const getAllOrdersService = () => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield order_model_1.Order.find();
     if (orders.length === 0) {
@@ -31,6 +33,7 @@ const getAllOrdersService = () => __awaiter(void 0, void 0, void 0, function* ()
     }
     return orders;
 });
+// get a single order service by id
 const getSingleOrderService = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield order_model_1.Order.findById(id);
     if (!orders) {
@@ -38,6 +41,7 @@ const getSingleOrderService = (id) => __awaiter(void 0, void 0, void 0, function
     }
     return orders;
 });
+// update order status service by id
 const updateOrderService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const order = yield order_model_1.Order.findById(id);
     if (!order) {
@@ -51,11 +55,12 @@ const updateOrderService = (id, payload) => __awaiter(void 0, void 0, void 0, fu
             yield (0, updateProduct_1.updateStock)(item.productId, item.quantity);
         }));
     }
-    order.orderStatus = payload.status;
+    order.orderStatus = payload;
     order.deliveredAt = new Date(Date.now());
     yield order.save();
     return order;
 });
+// delete order by id
 const deleteOrderService = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_model_1.Order.findByIdAndDelete(id);
     if (!result) {

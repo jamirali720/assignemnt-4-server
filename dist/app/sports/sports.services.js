@@ -19,6 +19,7 @@ const sports_model_1 = require("./sports.model");
 const nodemailer_1 = require("../utils/nodemailer");
 const queryBuilder_1 = __importDefault(require("../QueryBuilder/queryBuilder"));
 const updateProduct_1 = require("../utils/updateProduct");
+// create a new sports service
 const createSportsService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const sports = yield sports_model_1.Sport.create(payload);
     if (!sports) {
@@ -26,21 +27,19 @@ const createSportsService = (payload) => __awaiter(void 0, void 0, void 0, funct
     }
     return sports;
 });
+// get all sports services with the specified parameters
 const getAllSportsService = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const features = new queryBuilder_1.default(sports_model_1.Sport.find(), query)
         .searchByName()
+        .filter()
         .searchByCategory()
         .searchByBrand()
-        .filter()
         .pagination()
         .sorting();
     const sports = yield features.query;
-    console.log(sports);
-    if (sports.length === 0) {
-        throw new error_1.ErrorHandler(http_status_1.default.NOT_FOUND, "No sports Data Found");
-    }
     return sports;
 });
+// get all sports without query parameters
 const getSportsService = () => __awaiter(void 0, void 0, void 0, function* () {
     const sports = yield sports_model_1.Sport.find();
     if (!sports) {
@@ -48,6 +47,15 @@ const getSportsService = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     return sports;
 });
+// get sports latest
+const getLatestSportsService = () => __awaiter(void 0, void 0, void 0, function* () {
+    const sports = yield sports_model_1.Sport.find().sort({ createdAt: -1 }).limit(8);
+    if (!sports) {
+        throw new error_1.ErrorHandler(http_status_1.default.NOT_FOUND, "No sports Data Found");
+    }
+    return sports;
+});
+// get single sport by id
 const getSingleSportService = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const sports = yield sports_model_1.Sport.findById(id);
     if (!sports) {
@@ -55,6 +63,7 @@ const getSingleSportService = (id) => __awaiter(void 0, void 0, void 0, function
     }
     return sports;
 });
+// update sport by id
 const updateSportsService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = {};
     const allowedUpdatesFields = [
@@ -64,7 +73,7 @@ const updateSportsService = (id, payload) => __awaiter(void 0, void 0, void 0, f
         "description",
         "price",
         "stock",
-        "image"
+        "image",
     ];
     if (payload && typeof payload === "object") {
         for (const key in payload) {
@@ -82,7 +91,7 @@ const updateSportsService = (id, payload) => __awaiter(void 0, void 0, void 0, f
     }
     return result;
 });
-// update stock with cash on delivery 
+// update stock with cash on delivery
 const updateStockWithCashOnDelivery = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = payload === null || payload === void 0 ? void 0 : payload.map((_a) => __awaiter(void 0, [_a], void 0, function* ({ id, quantity }) {
         yield (0, updateProduct_1.updateStock)(id, quantity);
@@ -92,6 +101,7 @@ const updateStockWithCashOnDelivery = (payload) => __awaiter(void 0, void 0, voi
     }
     return result;
 });
+// delete sport by id
 const deleteSportsService = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield sports_model_1.Sport.findByIdAndDelete(id);
     if (!result) {
@@ -99,7 +109,7 @@ const deleteSportsService = (id) => __awaiter(void 0, void 0, void 0, function* 
     }
     return result;
 });
-// contact information
+// contact information for contact section
 const contactFormSubmit = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield (0, nodemailer_1.sendContactEmail)(payload);
     if (!result) {
@@ -107,6 +117,7 @@ const contactFormSubmit = (payload) => __awaiter(void 0, void 0, void 0, functio
     }
     return result;
 });
+// create a new review to a sport
 const createReviewService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f;
     const { name, email, comment, rating } = payload;
@@ -148,4 +159,5 @@ exports.SportsService = {
     contactFormSubmit,
     getSportsService,
     createReviewService,
+    getLatestSportsService,
 };

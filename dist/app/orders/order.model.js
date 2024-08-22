@@ -4,6 +4,11 @@ exports.Order = void 0;
 const mongoose_1 = require("mongoose");
 const orderSchema = new mongoose_1.Schema({
     shippingInfo: {
+        name: {
+            type: String,
+            required: [true, "Address is required"],
+            trim: true,
+        },
         address: {
             type: String,
             required: [true, "Address is required"],
@@ -34,13 +39,18 @@ const orderSchema = new mongoose_1.Schema({
             required: [true, "Phone is required"],
             trim: true,
         },
+        email: {
+            type: String,
+            required: [true, "Email is required"],
+            trim: true,
+        },
     },
     orderItems: [
         {
-            name: {
+            productName: {
                 type: String,
                 trim: true,
-                required: [true, "Name is required"],
+                required: [true, "productName is required"],
             },
             productId: {
                 type: mongoose_1.Schema.Types.ObjectId,
@@ -71,11 +81,6 @@ const orderSchema = new mongoose_1.Schema({
             type: String,
             required: [true, "Payment Status is required"],
         },
-    },
-    email: {
-        type: String,
-        required: [true, "Email is required"],
-        trim: true,
     },
     itemPrice: {
         type: Number,

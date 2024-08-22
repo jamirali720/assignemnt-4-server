@@ -2,10 +2,9 @@ import { Router } from "express";
 import sportsRouter from "../sports/sports.routes";
 import paymentRouter from "../payment/payment.router";
 import ordersRouter from "../orders/order.routes";
+import teamRouter from "../team/team.routes";
 
-
-
-
+//Define routes
 const router = Router();
 
 const moduleRoutes = [  
@@ -20,6 +19,10 @@ const moduleRoutes = [
   {
     path: "/orders",
     route:  ordersRouter,
+  },
+  {
+    path: "/teams",
+    route:  teamRouter,
   },
   
 ];

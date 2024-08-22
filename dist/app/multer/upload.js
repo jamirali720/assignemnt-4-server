@@ -8,12 +8,13 @@ const cloudinary_1 = require("cloudinary");
 const deleteImagePath_1 = require("../utils/deleteImagePath");
 const multer_1 = __importDefault(require("multer"));
 const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
-// Configuration
+// Configuration of cloudinary
 cloudinary_1.v2.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 });
+// upload image to cloudinary
 const sendImageToCloudinary = (imageName, imagePath) => {
     // Upload an image
     return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ const sendImageToCloudinary = (imageName, imagePath) => {
     });
 };
 exports.sendImageToCloudinary = sendImageToCloudinary;
+// delete image from cloudinary
 const deleteImageFromCloudinary = (imageId) => {
     // delete an image from cloudinary
     return new Promise((resolve, reject) => {
@@ -41,6 +43,7 @@ const deleteImageFromCloudinary = (imageId) => {
     });
 };
 exports.deleteImageFromCloudinary = deleteImageFromCloudinary;
+//multer function
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         cb(null, process.cwd() + "/uploads/");
@@ -50,6 +53,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, file.fieldname + "-" + uniqueSuffix);
     },
 });
+// image filtering to specify image
 const imageFilter = function (req, file, cb) {
     if (!allowedFiles.includes(file.mimetype)) {
         return cb(new Error("Only .jpg .jpeg .png and .gif images are allowed"), false);

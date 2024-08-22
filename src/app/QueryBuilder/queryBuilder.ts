@@ -12,35 +12,36 @@ class QueryBuilder {
     this.queryStr = queryStr;
   }
 
-  searchByName() {  
-    const name =
-      this.queryStr.name 
-        ? { name: { $regex: `${this.queryStr.name}`, $options: "i" } }
-        : {};
-    this.query = this.query.find({ ...name });    
+  searchByName() {
+    const name = this.queryStr.name
+      ? { name: { $regex: `${this.queryStr.name}`, $options: "i" } }
+      : {};
+    this.query = this.query.find({ ...name });
     return this;
   }
   searchByCategory() {
     const category =
-      this.queryStr.category === "All" 
-        ? {} : this.queryStr.category ?  { category: this.queryStr.category } 
+      this.queryStr.category !== "All"
+        ? { category: this.queryStr.category }
         : {};
+
     this.query = this.query.find({ ...category });
     return this;
   }
   searchByBrand() {
     const brand =
-      this.queryStr.brand === "All" ? {} : this.queryStr.brand  ?  { brand: this.queryStr.brand } : {};   
+      this.queryStr.brand !== "All" ? { brand: this.queryStr.brand } : {};
     this.query = this.query.find({ ...brand });
     return this;
   }
 
   filter() {
-    const queryCopy = { ...this.queryStr };   
+    const queryCopy = { ...this.queryStr };
     const removeFields = ["limit", "page", "name", "category", "brand", "sort"];
     // remove some fields
     removeFields.forEach((field) => delete (queryCopy as QueryMap)[field]);
 
+    // filter with price and ratings
     let queryString = JSON.stringify(queryCopy);
     queryString = queryString.replace(
       /\b(gt|gte|lt|lte)\b/g,
@@ -54,11 +55,12 @@ class QueryBuilder {
     const currentPage = Number(this.queryStr.page);
     const limit = Number(this.queryStr.limit);
     const skip = (currentPage - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);   
+    this.query = this.query.skip(skip).limit(limit);
     return this;
   }
   sorting() {
-    if (this.queryStr.sort === "asc") {
+    const sortingValue = this.queryStr.sort;
+    if (sortingValue === "asc") {
       this.query = this.query.sort({ price: 1 });
     } else {
       this.query = this.query.sort({ price: -1 });

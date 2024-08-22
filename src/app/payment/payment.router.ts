@@ -5,6 +5,7 @@ import { upload } from "../multer/upload";
 
 const paymentRouter = Router();
 
+// payment routes
 paymentRouter.route("/create-payment-intent").post( upload.none(),handlePaymentIntent);
 paymentRouter.route("/publishable-key").get(handleSendPublishableKey);
 

@@ -7,6 +7,8 @@ const express_1 = require("express");
 const sports_routes_1 = __importDefault(require("../sports/sports.routes"));
 const payment_router_1 = __importDefault(require("../payment/payment.router"));
 const order_routes_1 = __importDefault(require("../orders/order.routes"));
+const team_routes_1 = __importDefault(require("../team/team.routes"));
+//Define routes
 const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -20,6 +22,10 @@ const moduleRoutes = [
     {
         path: "/orders",
         route: order_routes_1.default,
+    },
+    {
+        path: "/teams",
+        route: team_routes_1.default,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

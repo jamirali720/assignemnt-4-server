@@ -16,6 +16,7 @@ exports.handleSendPublishableKey = exports.handlePaymentIntent = void 0;
 const higherOrderFunction_1 = __importDefault(require("../utils/higherOrderFunction"));
 const configs_1 = __importDefault(require("../configs"));
 const stripe = require("stripe")(configs_1.default.stripeSecretKey);
+// create payment intent
 exports.handlePaymentIntent = (0, higherOrderFunction_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const paymentIntent = yield stripe.paymentIntents.create({
         amount: req.body.amount,
@@ -26,6 +27,7 @@ exports.handlePaymentIntent = (0, higherOrderFunction_1.default)((req, res, next
         clientSecret: paymentIntent.client_secret,
     });
 }));
+// send publishable key
 exports.handleSendPublishableKey = (0, higherOrderFunction_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({
         publishableKey: configs_1.default.stripePublishableKey,

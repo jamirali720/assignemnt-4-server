@@ -5,6 +5,11 @@ import { IOrder } from "./order.interface";
 const orderSchema = new Schema<IOrder>(
   {
     shippingInfo: {
+      name: {
+        type: String,
+        required: [true, "Address is required"],
+        trim: true,
+      },
       address: {
         type: String,
         required: [true, "Address is required"],
@@ -35,14 +40,19 @@ const orderSchema = new Schema<IOrder>(
         required: [true, "Phone is required"],
         trim: true,
       },
+      email: {
+        type: String,
+        required: [true, "Email is required"],
+        trim: true,
+      },
     },
 
     orderItems: [
       {
-        name: {
+        productName: {
           type: String,
           trim: true,
-          required: [true, "Name is required"],
+          required: [true, "productName is required"],
         },
         productId: {
           type: Schema.Types.ObjectId,
@@ -73,11 +83,6 @@ const orderSchema = new Schema<IOrder>(
         type: String,
         required: [true, "Payment Status is required"],
       },
-    },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      trim: true,
     },
     itemPrice: {
       type: Number,

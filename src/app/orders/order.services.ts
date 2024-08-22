@@ -6,6 +6,8 @@ import { IOrder, IStatus } from "./order.interface";
 import { Order } from "./order.model";
 import { updateStock } from "../utils/updateProduct";
 
+
+// create order service
 const createOrderService = async (payload: Partial<IOrder>) => {
   const order = await Order.create(payload);
   if (!order) {
@@ -14,6 +16,7 @@ const createOrderService = async (payload: Partial<IOrder>) => {
   return order;
 };
 
+// get all orders service
 const getAllOrdersService = async () => {
   const orders = await Order.find();
 
@@ -23,6 +26,7 @@ const getAllOrdersService = async () => {
   return orders;
 };
 
+// get a single order service by id
 const getSingleOrderService = async (id: string) => {
   const orders = await Order.findById(id);
   if (!orders) {
@@ -31,7 +35,8 @@ const getSingleOrderService = async (id: string) => {
   return orders;
 };
 
-const updateOrderService = async (id: string, payload: IStatus) => {
+// update order status service by id
+const updateOrderService = async (id: string, payload: string) => { 
   const order = await Order.findById(id);
   if (!order) {
     throw new ErrorHandler(httpStatus.NOT_FOUND, "Not found order");
@@ -49,12 +54,15 @@ const updateOrderService = async (id: string, payload: IStatus) => {
     });
   }
 
-  order.orderStatus = payload.status;
+  order.orderStatus = payload;
   order.deliveredAt = new Date(Date.now());
   await order.save();
 
   return order;
 };
+
+
+// delete order by id
 const deleteOrderService = async (id: string) => {
   const result = await Order.findByIdAndDelete(id);
   if (!result) {

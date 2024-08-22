@@ -17,10 +17,10 @@ const http_status_1 = __importDefault(require("http-status"));
 const higherOrderFunction_1 = __importDefault(require("../utils/higherOrderFunction"));
 const success_1 = require("../utils/success");
 const order_services_1 = require("./order.services");
+const error_1 = require("../utils/error");
+//create a new order 
 const handleCreateOrder = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("checkCreateOrder", req.body);
     const result = yield order_services_1.OrdersService.createOrderService(Object.assign(Object.assign({}, req.body), { paidAt: new Date() }));
-    console.log("check result", result);
     (0, success_1.successResponse)(res, {
         success: true,
         statusCode: 201,
@@ -28,6 +28,7 @@ const handleCreateOrder = (0, higherOrderFunction_1.default)((req, res) => __awa
         data: result,
     });
 }));
+// GET all orders
 const handleGetAllOrders = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_services_1.OrdersService.getAllOrdersService();
     (0, success_1.successResponse)(res, {
@@ -37,6 +38,7 @@ const handleGetAllOrders = (0, higherOrderFunction_1.default)((req, res) => __aw
         data: result,
     });
 }));
+// Get a single order
 const handleGetSingleOrder = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_services_1.OrdersService.getSingleOrderService(req.params.id);
     (0, success_1.successResponse)(res, {
@@ -46,8 +48,13 @@ const handleGetSingleOrder = (0, higherOrderFunction_1.default)((req, res) => __
         data: result,
     });
 }));
+// update order status 
 const handleUpdateOrder = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield order_services_1.OrdersService.updateOrderService(req.params.id, req.body);
+    const id = req.params.id;
+    const status = req.body.status;
+    if (!status)
+        throw new error_1.ErrorHandler(404, "You must select status");
+    const result = yield order_services_1.OrdersService.updateOrderService(id, status);
     (0, success_1.successResponse)(res, {
         success: true,
         statusCode: http_status_1.default.OK,
@@ -55,6 +62,7 @@ const handleUpdateOrder = (0, higherOrderFunction_1.default)((req, res) => __awa
         data: result,
     });
 }));
+// delete order
 const handleDeleteOrder = (0, higherOrderFunction_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_services_1.OrdersService.deleteOrderService(req.params.id);
     (0, success_1.successResponse)(res, {

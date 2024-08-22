@@ -13,14 +13,14 @@ class QueryBuilder {
         return this;
     }
     searchByCategory() {
-        const category = this.queryStr.category === "All"
-            ? {} : this.queryStr.category ? { category: this.queryStr.category }
+        const category = this.queryStr.category !== "All"
+            ? { category: this.queryStr.category }
             : {};
         this.query = this.query.find(Object.assign({}, category));
         return this;
     }
     searchByBrand() {
-        const brand = this.queryStr.brand === "All" ? {} : this.queryStr.brand ? { brand: this.queryStr.brand } : {};
+        const brand = this.queryStr.brand !== "All" ? { brand: this.queryStr.brand } : {};
         this.query = this.query.find(Object.assign({}, brand));
         return this;
     }
@@ -29,6 +29,7 @@ class QueryBuilder {
         const removeFields = ["limit", "page", "name", "category", "brand", "sort"];
         // remove some fields
         removeFields.forEach((field) => delete queryCopy[field]);
+        // filter with price and ratings
         let queryString = JSON.stringify(queryCopy);
         queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
         this.query = this.query.find(JSON.parse(queryString));
@@ -42,7 +43,8 @@ class QueryBuilder {
         return this;
     }
     sorting() {
-        if (this.queryStr.sort === "asc") {
+        const sortingValue = this.queryStr.sort;
+        if (sortingValue === "asc") {
             this.query = this.query.sort({ price: 1 });
         }
         else {

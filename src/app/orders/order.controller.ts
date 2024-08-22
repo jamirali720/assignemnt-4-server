@@ -2,16 +2,16 @@ import httpStatus from "http-status";
 import catchAsync from "../utils/higherOrderFunction";
 import { successResponse } from "../utils/success";
 import { OrdersService } from "./order.services";
+import { ErrorHandler } from "../utils/error";
 
+
+//create a new order 
 const handleCreateOrder = catchAsync(async (req, res) => {
-  console.log("checkCreateOrder", req.body)
   const result = await OrdersService.createOrderService({
     ...req.body,
-    paidAt:new Date(),
-
+    paidAt: new Date(),
   });
-
-  console.log("check result",  result)
+ 
   successResponse(res, {
     success: true,
     statusCode: 201,
@@ -20,6 +20,7 @@ const handleCreateOrder = catchAsync(async (req, res) => {
   });
 });
 
+// GET all orders
 const handleGetAllOrders = catchAsync(async (req, res) => {
   const result = await OrdersService.getAllOrdersService();
   successResponse(res, {
@@ -30,6 +31,8 @@ const handleGetAllOrders = catchAsync(async (req, res) => {
   });
 });
 
+
+// Get a single order
 const handleGetSingleOrder = catchAsync(async (req, res) => {
   const result = await OrdersService.getSingleOrderService(req.params.id);
   successResponse(res, {
@@ -39,8 +42,14 @@ const handleGetSingleOrder = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const handleUpdateOrder = catchAsync(async (req, res) => {
-  const result = await OrdersService.updateOrderService(req.params.id, req.body);
+
+// update order status 
+const handleUpdateOrder = catchAsync(async (req, res) => { 
+  const id = req.params.id;
+  const status = req.body.status;
+  if (!status) throw new ErrorHandler(404, "You must select status");
+
+  const result = await OrdersService.updateOrderService(id, status);
   successResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -49,6 +58,7 @@ const handleUpdateOrder = catchAsync(async (req, res) => {
   });
 });
 
+// delete order
 const handleDeleteOrder = catchAsync(async (req, res) => {
   const result = await OrdersService.deleteOrderService(req.params.id);
   successResponse(res, {
@@ -64,5 +74,5 @@ export const orderControllers = {
   handleGetAllOrders,
   handleGetSingleOrder,
   handleUpdateOrder,
-  handleDeleteOrder, 
+  handleDeleteOrder,
 };
