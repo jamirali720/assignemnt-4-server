@@ -79,6 +79,7 @@ const handleError = (err, _req, res, _next) => {
             },
         ];
     }
+    console.log(err);
     res.status(statusCode).json({
         success: false,
         statusCode,

@@ -6,14 +6,13 @@ import multer, { Multer, FileFilterCallback } from "multer";
 import fs from "fs";
 import path from "path";
 
-const uploadDir = path.join(__dirname, "uploads");
+const uploadDir = path.join("/tmp", "uploads");
 
 
 // Ensure the directory exists
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
-
 
 const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
@@ -59,8 +58,7 @@ export const deleteImageFromCloudinary = (imageId: string) => {
 
 //multer function
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // cb(null, process.cwd() + "/uploads/");   
+  destination: function (req, file, cb) {    
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
@@ -75,7 +73,7 @@ const imageFilter = function (
   cb: any
 ) {
   if (!allowedFiles.includes(file.mimetype)) {
-    return cb(
+    cb(
       new Error("Only .jpg .jpeg .png and .gif images are allowed"),
       false
     );

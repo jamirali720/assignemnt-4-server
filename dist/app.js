@@ -11,6 +11,7 @@ const app = (0, express_1.default)();
 // middleware
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// app.use(express.static(path.join(__dirname, "uploads")));
 app.use((0, cors_1.default)());
 // main router
 app.use("/api", routes_1.default);
