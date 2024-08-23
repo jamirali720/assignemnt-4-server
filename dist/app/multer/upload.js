@@ -7,6 +7,13 @@ exports.upload = exports.deleteImageFromCloudinary = exports.sendImageToCloudina
 const cloudinary_1 = require("cloudinary");
 const deleteImagePath_1 = require("../utils/deleteImagePath");
 const multer_1 = __importDefault(require("multer"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const uploadDir = path_1.default.join(__dirname, "uploads");
+// Ensure the directory exists
+if (!fs_1.default.existsSync(uploadDir)) {
+    fs_1.default.mkdirSync(uploadDir, { recursive: true });
+}
 const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 // Configuration of cloudinary
 cloudinary_1.v2.config({
@@ -46,7 +53,8 @@ exports.deleteImageFromCloudinary = deleteImageFromCloudinary;
 //multer function
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, process.cwd() + "/uploads/");
+        // cb(null, process.cwd() + "/uploads/");   
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + file.originalname;
@@ -60,4 +68,7 @@ const imageFilter = function (req, file, cb) {
     }
     cb(null, true);
 };
-exports.upload = (0, multer_1.default)({ storage: storage, fileFilter: imageFilter });
+exports.upload = (0, multer_1.default)({
+    storage: storage,
+    fileFilter: imageFilter,
+});

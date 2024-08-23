@@ -2,10 +2,20 @@ import { v2 as cloudinary } from "cloudinary";
 
 import { deleteImagePath } from "../utils/deleteImagePath";
 import { Request } from "express";
-import multer, {Multer, FileFilterCallback } from "multer";
+import multer, { Multer, FileFilterCallback } from "multer";
+import fs from "fs";
+import path from "path";
 
-const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"]
+const uploadDir = path.join(__dirname, "uploads");
 
+
+// Ensure the directory exists
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+
+const allowedFiles = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
 // Configuration of cloudinary
 cloudinary.config({
@@ -13,7 +23,6 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
-
 
 // upload image to cloudinary
 export const sendImageToCloudinary = (imageName: string, imagePath: string) => {
@@ -48,18 +57,16 @@ export const deleteImageFromCloudinary = (imageId: string) => {
   });
 };
 
-
-
 //multer function
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.cwd() + "/uploads/");
+    // cb(null, process.cwd() + "/uploads/");   
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + file.originalname;
     cb(null, file.fieldname + "-" + uniqueSuffix);
   },
- 
 });
 // image filtering to specify image
 const imageFilter = function (
@@ -67,13 +74,17 @@ const imageFilter = function (
   file: Express.Multer.File,
   cb: any
 ) {
-  
   if (!allowedFiles.includes(file.mimetype)) {
-    return cb(new Error("Only .jpg .jpeg .png and .gif images are allowed"), false);
+    return cb(
+      new Error("Only .jpg .jpeg .png and .gif images are allowed"),
+      false
+    );
   }
-  
+
   cb(null, true);
 };
 
-
-export const upload: Multer = multer({ storage: storage, fileFilter: imageFilter});
+export const upload: Multer = multer({
+  storage: storage,
+  fileFilter: imageFilter,
+});
